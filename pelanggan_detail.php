@@ -198,64 +198,7 @@ $query_pembelian = mysqli_query($koneksi, "
     </div>
 </div>
 
-<style>
-    .card {
-        border-radius: 10px;
-    }
-    .table th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-    }
-    .btn-primary {
-        background-color: #1d3557;
-        border-color: #1d3557;
-    }
-    .btn-primary:hover {
-        background-color: #152640;
-        border-color: #152640;
-    }
-    .card-title {
-        color: #1d3557;
-        font-weight: 600;
-    }
-    .table-borderless td {
-        padding: 0.5rem 0;
-    }
-    @media (max-width: 768px) {
-        .btn-sm {
-            padding: 0.25rem 0.4rem;
-        }
-        .table {
-            font-size: 0.9rem;
-        }
-    }
-    .card .card-subtitle {
-        font-size: 0.9rem;
-    }
-    .badge {
-        font-weight: 500;
-        padding: 0.5em 1em;
-    }
-    .card .btn-info {
-        background-color: #457b9d;
-        border-color: #457b9d;
-        color: white;
-    }
-    .card .btn-info:hover {
-        background-color: #3d6d8c;
-        border-color: #3d6d8c;
-    }
-    .alert-sm {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-    }
-    .gap-2 {
-        gap: 0.5rem;
-    }
-    .form-control-sm {
-        min-width: 120px;
-    }
-</style>
+
 
 <script>
     // Initialize tooltips

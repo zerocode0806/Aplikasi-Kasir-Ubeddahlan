@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 25, 2026 at 07:46 AM
--- Server version: 8.0.30
--- PHP Version: 8.3.12
+-- Generation Time: Sep 22, 2026 at 11:48 AM
+-- Server version: 8.4.3
+-- PHP Version: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `cart` (
   `id` int NOT NULL,
   `id_produk` int NOT NULL,
-  `nama_produk` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nama_produk` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `harga` int DEFAULT NULL,
   `jumlah` int DEFAULT NULL,
   `total_harga` int DEFAULT NULL,
@@ -113,7 +113,35 @@ INSERT INTO `detail_penjualan` (`id_detail`, `id_penjualan`, `id_produk`, `jumla
 (70, 24, 29, 1, 15000000),
 (71, 25, 17, 1, 100000),
 (72, 25, 18, 3, 600000),
-(73, 25, 22, 1, 300000);
+(73, 25, 22, 1, 300000),
+(74, 26, 17, 1, 100000),
+(75, 26, 18, 1, 200000),
+(76, 26, 20, 1, 20000000),
+(77, 26, 21, 1, 3000000),
+(78, 26, 22, 1, 300000),
+(79, 26, 25, 1, 5000000),
+(80, 26, 28, 1, 25000000),
+(81, 26, 29, 1, 15000000),
+(82, 26, 30, 1, 30000000),
+(83, 26, 31, 1, 900000000),
+(84, 27, 17, 1, 100000),
+(85, 27, 18, 1, 200000),
+(86, 27, 20, 1, 20000000),
+(87, 27, 21, 1, 3000000),
+(88, 27, 22, 1, 300000),
+(89, 27, 25, 1, 5000000),
+(90, 27, 28, 1, 25000000),
+(91, 27, 29, 1, 15000000),
+(92, 27, 30, 1, 30000000),
+(93, 27, 31, 1, 900000000),
+(94, 28, 29, 9, 135000000),
+(95, 28, 28, 1, 25000000),
+(96, 28, 20, 1, 20000000),
+(97, 29, 30, 46, 1380000000),
+(98, 30, 21, 4, 12000000),
+(99, 30, 29, 4, 60000000),
+(100, 30, 28, 3, 75000000),
+(101, 30, 20, 3, 60000000);
 
 -- --------------------------------------------------------
 
@@ -163,7 +191,10 @@ INSERT INTO `pelanggan` (`id_pelanggan`, `nama_pelanggan`, `alamat`, `no_telepon
 (15, 'Xavier', 'Amerika', '0943456212'),
 (17, 'Hesti', 'terik', '0938242324'),
 (18, 'Tegar Rawr', 'Terik', '085230087174'),
-(19, 'Dhea', 'Tarik', '029837347323');
+(19, 'Dhea', 'Tarik', '029837347323'),
+(21, 'Ubaidillah Dahlan', 'Terik 07/03 Krian Sidoarjo', '085163024682'),
+(22, 'Ubaidillah Dahlan', 'Terik 07/03 Krian Sidoarjo', '085163024682'),
+(23, 'Ubaidillah Dahlan', 'Terik 07/03 Krian Sidoarjo', '085163024682');
 
 -- --------------------------------------------------------
 
@@ -179,8 +210,8 @@ CREATE TABLE `penjualan` (
   `id_pelanggan` int DEFAULT NULL,
   `bayar` int DEFAULT NULL,
   `kembali` int DEFAULT NULL,
-  `metode` enum('Cash','Transfer') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('Selsesai','Proses') COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `metode` enum('Cash','Transfer','E-Wallet') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('Proses','Dikirim','Selesai','Dibatalkan') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Proses'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -207,7 +238,12 @@ INSERT INTO `penjualan` (`id_penjualan`, `tanggal_penjualan`, `id_kasir`, `total
 (22, '2026-02-05', 20, 25000000, 19, 25000000, 0, NULL, NULL),
 (23, '2026-02-23', 20, 20400000, 15, 20400000, 0, NULL, NULL),
 (24, '2026-04-03', 20, 970400000, 15, 970400000, 0, NULL, NULL),
-(25, '2026-05-25', 20, 1000000, 15, 1000000, 0, NULL, NULL);
+(25, '2026-05-25', 20, 1000000, 15, 1000000, 0, NULL, NULL),
+(26, '2026-07-25', 20, 998600000, 15, 998600000, 0, NULL, NULL),
+(27, '2026-07-25', 21, 998600000, 12, 998600000, 0, NULL, NULL),
+(28, '2026-09-22', 23, 180000000, 21, 180000000, 0, 'Transfer', 'Dikirim'),
+(29, '2026-09-22', 23, 1380000000, 22, 1380000000, 0, 'E-Wallet', 'Proses'),
+(30, '2026-09-22', 23, 207000000, 23, 207000000, 0, 'Transfer', 'Selesai');
 
 -- --------------------------------------------------------
 
@@ -217,11 +253,11 @@ INSERT INTO `penjualan` (`id_penjualan`, `tanggal_penjualan`, `id_kasir`, `total
 
 CREATE TABLE `produk` (
   `id_produk` int NOT NULL,
-  `nama_produk` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `deskripsi_produk` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nama_produk` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `deskripsi_produk` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `harga` int DEFAULT NULL,
   `stok` int DEFAULT NULL,
-  `gambar_produk` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `gambar_produk` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -229,16 +265,29 @@ CREATE TABLE `produk` (
 --
 
 INSERT INTO `produk` (`id_produk`, `nama_produk`, `deskripsi_produk`, `harga`, `stok`, `gambar_produk`) VALUES
-(17, 'Mouse', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 100000, 770, 'mouse.png'),
-(18, 'Monitor', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 200000, 961, 'monitor.jpg'),
-(20, 'Vga Card', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 20000000, 977, 'vga.jpeg'),
-(21, 'Motherboard', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 3000000, 980, 'motherboard.jpg'),
-(22, 'Ram', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 300000, 983, 'ram.jpeg'),
-(25, 'Laptop', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 5000000, 9992, 'laptop.jpeg'),
-(28, 'Samsung S25 Ultra', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.\r\n', 25000000, 191, 's25 ultra.jpg'),
-(29, 'Asus ROG 8 Pro', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.\r\n', 15000000, 92, 'rog 8.jpg'),
-(30, 'iPhone 16 Pro Max', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.\r\n', 30000000, 48, 'iphone 16 promax.jpg'),
-(31, 'Rubicon', 'Rubicon 2013', 900000000, 9, 'rubicon.jpg');
+(17, 'Mouse', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 100000, 768, 'mouse.png'),
+(18, 'Monitor', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 200000, 959, 'monitor.jpg'),
+(20, 'Vga Card', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 20000000, 971, 'vga.jpeg'),
+(21, 'Motherboard', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 3000000, 974, 'motherboard.jpg'),
+(22, 'Ram', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 300000, 981, 'ram.jpeg'),
+(25, 'Laptop', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 5000000, 9990, 'laptop.jpeg'),
+(28, 'Samsung S25 Ultra', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.\r\n', 25000000, 185, 's25 ultra.jpg'),
+(29, 'Asus ROG 8 Pro', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.\r\n', 15000000, 77, 'rog 8.jpg'),
+(30, 'iPhone 16 Pro Max', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.\r\n', 30000000, 98, 'iphone 16 promax.jpg'),
+(31, 'Rubicon', 'Rubicon 2013', 900000000, 9, 'rubicon.jpg'),
+(32, 'Motorola Signature', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 5000000, 34, 'br-m036969-02242_full09-4bb3b898-removebg-preview.png'),
+(33, 'iPhone 17 Pro Max', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 20000000, 67, 'iphone-17-pro-17-pro-max-hero.png'),
+(34, 'iPhone 18 Pro Max', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 24000000, 56, 'iPhone_18_Pro_Max_Burgundy_PDP_Image_Position_1__en-US.webp'),
+(35, 'MackBook Neo', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 12000000, 34, 'mackboob neo.webp'),
+(36, 'MackBook Pro M5', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 70000000, 46, 'apple_macbook_pro_14_inci_m5_max_2026_space_black_1_.webp'),
+(37, 'Huawei Mate XT', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 18000000, 34, 'matext.webp'),
+(38, 'Marshal Major V', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 2000000, 65, 'major 5.webp'),
+(39, 'Marshal Embarton', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 800000, 76, 'marshal embarton.webp'),
+(40, 'Airpods 5', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 4000000, 67, 'airpods 5.jpg'),
+(41, 'Huawei MatePad Air', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.\r\n\r\n', 5000000, 88, 'huawei matepad air.webp'),
+(42, 'Samsung Tab S10 Ultra', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 11000000, 43, 'tab s10 ultra.jpg'),
+(43, 'Apple Watch Ultra 3', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 3400000, 45, 'apple watch ultra 3.jpg'),
+(44, 'Huawei Watch Fit 5 Pro', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dolores.', 6000000, 23, 'huawei watch fit 5 pro.jpg');
 
 -- --------------------------------------------------------
 
@@ -248,11 +297,11 @@ INSERT INTO `produk` (`id_produk`, `nama_produk`, `deskripsi_produk`, `harga`, `
 
 CREATE TABLE `settings` (
   `id` int NOT NULL,
-  `business_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `business_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -270,20 +319,23 @@ INSERT INTO `settings` (`id`, `business_name`, `email`, `address`, `phone`, `log
 
 CREATE TABLE `user` (
   `id_user` int NOT NULL,
-  `nama` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `level` enum('admin','petugas') COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_telepon` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `alamat` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `level` enum('admin','petugas','user') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id_user`, `nama`, `username`, `password`, `level`) VALUES
-(16, 'Sam Sul', 'samsul', '$2y$10$8qZlMB7zkCVv477TpsWd0eaHhMVnbJY5WqTw37igDGHtwzfX2fEc6', 'petugas'),
-(20, 'Ubed Dahlan', 'ubeddahlan', '$2y$10$.i96rAR25h4anpS9fmVP0uA/R7yZeCxZ6yp2mVLCTBRbSy60BBeiC', 'admin'),
-(21, 'Kal El', 'kalel', '$2y$10$596S.WIqUuXyYBMBc/7qde9aufw0nLfmvLs0rk0QmRGTLWv8aDImK', 'petugas');
+INSERT INTO `user` (`id_user`, `nama`, `username`, `no_telepon`, `alamat`, `password`, `level`) VALUES
+(16, 'Sam Sul', 'samsul', NULL, NULL, '$2y$10$8qZlMB7zkCVv477TpsWd0eaHhMVnbJY5WqTw37igDGHtwzfX2fEc6', 'petugas'),
+(20, 'Ubed Dahlan', 'ubeddahlan', NULL, NULL, '$2y$10$.i96rAR25h4anpS9fmVP0uA/R7yZeCxZ6yp2mVLCTBRbSy60BBeiC', 'admin'),
+(21, 'Kal El', 'kalel', NULL, NULL, '$2y$10$/D9NsXvkOJMBD5hQJg7C2etX0gkiPkxFQx0znAQmFubQAUQFo9waO', 'petugas'),
+(23, 'Ubaidillah Dahlan', 'dahlanubed', '085163024682', 'Terik 07/03 Krian Sidoarjo', '$2y$10$51F8xzyBHG9dUcHxLUuEtu2KW9aD3I1Cu5Yo/1Kw4TQ9AEqErSN6q', 'user');
 
 --
 -- Indexes for dumped tables
@@ -346,13 +398,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=232;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=252;
 
 --
 -- AUTO_INCREMENT for table `detail_penjualan`
 --
 ALTER TABLE `detail_penjualan`
-  MODIFY `id_detail` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `id_detail` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `keranjang`
@@ -364,19 +416,19 @@ ALTER TABLE `keranjang`
 -- AUTO_INCREMENT for table `pelanggan`
 --
 ALTER TABLE `pelanggan`
-  MODIFY `id_pelanggan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_pelanggan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `penjualan`
 --
 ALTER TABLE `penjualan`
-  MODIFY `id_penjualan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_penjualan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `produk`
 --
 ALTER TABLE `produk`
-  MODIFY `id_produk` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id_produk` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `settings`
@@ -388,7 +440,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables

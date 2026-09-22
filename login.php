@@ -4,11 +4,14 @@ include 'koneksi.php';
 
 // Cek jika form login sudah disubmit
 if (isset($_POST["username"]) && isset($_POST["password"])) {
-    $username = $_POST['username'];
-    $password = $_POST['password']; // Plain text password input
+    $username = trim($_POST['username']);
+    $password = $_POST['password'];
 
     // Cek user berdasarkan username
-    $cek = mysqli_query($koneksi, "SELECT * FROM user WHERE username = '$username'");
+    $stmt = mysqli_prepare($koneksi, "SELECT * FROM user WHERE username = ? LIMIT 1");
+    mysqli_stmt_bind_param($stmt, 's', $username);
+    mysqli_stmt_execute($stmt);
+    $cek = mysqli_stmt_get_result($stmt);
     
     if (mysqli_num_rows($cek) > 0) {
         $data = mysqli_fetch_array($cek);
@@ -17,14 +20,15 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         if (password_verify($password, $data['password'])) {
             $_SESSION['id_user'] = $data['id_user'];
             $_SESSION['username'] = $data['username'];
-            $_SESSION['level'] = $data['level']; // level: admin/kasir
+                $_SESSION['level'] = $data['level'];
+                session_regenerate_id(true);
 
-            $nama = $data['nama']; // Ambil nama pengguna dari database
+                $nama = htmlspecialchars($data['nama'], ENT_QUOTES, 'UTF-8');
+                $redirect = $data['level'] === 'user' ? 'user_home.php' : 'dashboard.php';
 
-            // Redirect ke dashboard.php dengan level pengguna
             echo "<script>
                     alert('Selamat datang $nama ($data[level])');
-                    window.location = 'dashboard.php'; // Arahkan ke dashboard.php
+                    window.location = '$redirect';
                 </script>";
         } else {
             echo "<script>

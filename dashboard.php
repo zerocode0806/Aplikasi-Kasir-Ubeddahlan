@@ -15,6 +15,11 @@ $settings = mysqli_fetch_assoc($result);
 
 // Cek level user yang login
 $level = $_SESSION['level']; // Bisa 'admin' atau 'petugas'
+
+if ($level === 'user') {
+    header('Location: user_home.php');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>

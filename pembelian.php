@@ -6,6 +6,12 @@ include 'koneksi.php';
 $id_user = $_SESSION['id_user']; // ID user yang sedang login
 $level = $_SESSION['level']; // level user (admin atau kasir)
 
+if ($level === 'admin' && empty($_SESSION['admin_csrf'])) {
+    $_SESSION['admin_csrf'] = bin2hex(random_bytes(32));
+}
+$admin_flash = $_SESSION['admin_flash'] ?? null;
+unset($_SESSION['admin_flash']);
+
 // Variabel untuk search dan pagination
 $search = isset($_GET['search']) ? strip_tags($_GET['search']) : '';
 $jumlahDataPerhalaman = 10;
@@ -45,6 +51,7 @@ $query = mysqli_query($koneksi, $queryStr);
 ?>
 
 <div class="container-fluid px-4">
+    <?php if ($admin_flash): ?><div class="alert alert-<?= $admin_flash['type'] === 'success' ? 'success' : 'danger'; ?> alert-dismissible fade show" role="alert"><i class="fas fa-<?= $admin_flash['type'] === 'success' ? 'check' : 'triangle-exclamation'; ?> me-2"></i><?= htmlspecialchars($admin_flash['message'], ENT_QUOTES, 'UTF-8'); ?><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button></div><?php endif; ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mt-4" style="color: #1d3557;">
             <i class="fas fa-shopping-cart me-2"></i> Data Pembelian
@@ -114,7 +121,7 @@ $query = mysqli_query($koneksi, $queryStr);
                                 <td><?= $data['nama_pelanggan'] ?? 'Umum'; ?></td>
                                 <td class="text-end">Rp <?= number_format($data['total_harga'], 0, ',', '.'); ?></td>
                                 <td class="text-center">
-                                    <span class="badge bg-success">Selesai</span>
+                                    <?php if ($level === 'admin'): ?><form method="post" action="penjualan_status_update.php" class="d-inline-flex align-items-center gap-1"><input type="hidden" name="admin_csrf" value="<?= htmlspecialchars($_SESSION['admin_csrf'], ENT_QUOTES, 'UTF-8'); ?>"><input type="hidden" name="id_penjualan" value="<?= (int) $data['id_penjualan']; ?>"><select class="form-select form-select-sm" name="status" aria-label="Status pesanan #<?= (int) $data['id_penjualan']; ?>"><option value="Proses" <?= in_array($data['status'], ['Proses', ''], true) ? 'selected' : ''; ?>>Diproses</option><option value="Dikirim" <?= $data['status'] === 'Dikirim' ? 'selected' : ''; ?>>Dikirim</option><option value="Selesai" <?= in_array($data['status'], ['Selesai', 'Selsesai'], true) ? 'selected' : ''; ?>>Selesai</option><option value="Dibatalkan" <?= $data['status'] === 'Dibatalkan' ? 'selected' : ''; ?>>Dibatalkan</option></select><button class="btn btn-sm btn-primary" type="submit">Simpan</button></form><?php else: ?><span class="badge bg-success"><?= htmlspecialchars($data['status'] ?: 'Proses', ENT_QUOTES, 'UTF-8'); ?></span><?php endif; ?>
                                 </td>
                                 <td class="text-center">
                                     <a href="?page=penjualan_detail&&id=<?= $data['id_penjualan']; ?>" 

@@ -2,12 +2,17 @@
 include 'koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $username = $_POST['username'];
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
-    $level = $_POST['level'];
+    $level = 'user';
+
+    if ($first_name === '' || $last_name === '' || $username === '' || strlen($password) < 8) {
+        echo "<script>alert('Data wajib diisi dan password minimal 8 karakter.'); window.location = 'register.php';</script>";
+        exit();
+    }
 
     // Validasi password
     if ($password !== $confirm_password) {
@@ -24,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Set level ke admin
     // $level = 'admin';
 
-    // Insert data ke database
-    $sql = "INSERT INTO user (nama, username, password, level) VALUES ('$nama', '$username', '$hashed_password', '$level')";
-    $result = mysqli_query($koneksi, $sql);
+    $stmt = mysqli_prepare($koneksi, "INSERT INTO user (nama, username, password, level) VALUES (?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, 'ssss', $nama, $username, $hashed_password, $level);
+    $result = mysqli_stmt_execute($stmt);
 
     if ($result) {
         echo "<script>alert('Akun berhasil dibuat!'); window.location = 'login.php';</script>";
@@ -90,14 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                     <input class="form-control" id="inputPasswordConfirm" name="confirm_password" type="password" placeholder="Confirm password" required />
                                                     <label for="inputPasswordConfirm">Confirm Password</label>
                                                 </div>
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <select class="form-control" id="inputLevel" name="level" required>
-                                                    <option value="">Select Role</option>
-                                                    <option value="admin">Admin</option>
-                                                    <option value="petugas">Petugas</option>
-                                                </select>
-                                                <label for="inputLevel">Level</label>
                                             </div>
                                         </div>
                                         <div class="mt-4 mb-0">
